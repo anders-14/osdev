@@ -8,16 +8,17 @@ $(BIN_DIR)/os.bin: $(BIN_DIR)/temp.bin
 	dd if=$(BIN_DIR)/temp.bin of=$@ conv=notrunc
 	rm -f $(BIN_DIR)/*[!os].bin
 
-
-
 $(BIN_DIR)/temp.bin: $(BIN_DIR)/boot.bin $(BIN_DIR)/kernel.bin
 	cat $^ > $@
 
-$(BIN_DIR)/boot.bin: $(SRC_DIR)/boot.asm
-	nasm -f bin -o $@ $^
+$(BIN_DIR)/boot.bin: $(SRC_DIR)/boot.asm $(BIN_DIR)
+	nasm -f bin -o $@ $<
 
 $(BIN_DIR)/kernel.bin: $(SRC_DIR)/kernel.asm
-	nasm -f bin -o $@ $^
+	nasm -f bin -o $@ $<
+
+$(BIN_DIR):
+	mkdir -p $@
 
 # Run os in qemu
 run:
