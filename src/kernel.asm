@@ -21,11 +21,20 @@ main:
 
 echo_loop:
     xor ax, ax              ; Make ax = 0, faster than moving 0 into ax
+
     int 0x16                ; Get ready for keyboard input, ascii into al, scancode into ah
     cmp al, "Q"             ; Halt on Q
     je halt
+
     mov ah, 0x0E
     int 0x10                ; Print char typed
+
+    cmp al, 13              ; Compare typed char to CR
+    jne .not_newline        ; If not CR -> skip
+    mov al, 10              ; Else print LF
+    int 0x10
+
+.not_newline
     jmp echo_loop
 
 halt:
